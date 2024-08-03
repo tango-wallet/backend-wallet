@@ -4,6 +4,7 @@ const connectDB = require("./config/db");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+const { userRoutes } = require("./routes");
 //const { propertyRoutes, userRoutes } = require("./routes");
 
 dotenv.config();
@@ -24,8 +25,8 @@ app.use(express.json({ limit: "100mb" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //DB
-connectDB(
-  /*
+connectDB();
+/*
   "mongodb+srv://" +
     process.env.MONGO_USER +
     ":" +
@@ -33,7 +34,6 @@ connectDB(
     "@" +
     process.env.MONGO_URI
     */
-);
 
 const PORT = process.env.PORT;
 
@@ -60,6 +60,8 @@ app.use(function (req, res, next) {
 app.get("/", (req, res) => {
   res.send("Api running....");
 });
+
+app.use("/user", userRoutes);
 
 //Listen
 server.listen(PORT, () => console.log("Server started on port " + PORT));
