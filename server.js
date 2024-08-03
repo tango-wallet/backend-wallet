@@ -25,12 +25,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //DB
 connectDB(
+  /*
   "mongodb+srv://" +
     process.env.MONGO_USER +
     ":" +
     encodeURIComponent(process.env.MONGO_PSW) +
     "@" +
     process.env.MONGO_URI
+    */
 );
 
 const PORT = process.env.PORT;
