@@ -4,8 +4,7 @@ const connectDB = require("./config/db");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-const { User } = require("./models");
-const { propertyRoutes, userRoutes } = require("./routes");
+//const { propertyRoutes, userRoutes } = require("./routes");
 
 dotenv.config();
 const app = express();
@@ -13,13 +12,8 @@ const server = require("http").Server(app);
 
 app.disable("x-powered-by");
 
-//CORS
 const corsOptions = {
-  origin: [
-    process.env.LOCAL_URL,
-    process.env.DEV_URL,
-    process.env.PRODUCTION_URL,
-  ],
+  origin: [process.env.LOCAL_URL, process.env.PRODUCTION_URL],
   optionsSuccessStatus: 204,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
@@ -38,17 +32,15 @@ connectDB(
     "@" +
     process.env.MONGO_URI
 );
-//Conectando mongodb desde localhost
-//connectDB("mongodb://localhost:27017/");
 
 const PORT = process.env.PORT;
-const ENV = process.env.NODE_ENV;
 
 app.use(function (req, res, next) {
   console.log("METHOD:", req.method, "QUERY:", req.originalUrl);
   next();
 });
 
+/*
 app.use(function (req, res, next) {
   req.endpoint = req.originalUrl.split("/")[2];
   req.method = req.method;
@@ -60,16 +52,12 @@ app.use(function (req, res, next) {
 
   next();
 });
+*/
 
 //Routes
 app.get("/", (req, res) => {
   res.send("Api running....");
 });
 
-app.use("/api/property", propertyRoutes);
-app.use("/api/user", userRoutes);
-
 //Listen
-server.listen(PORT, () =>
-  console.log("Server started on port " + PORT, "in " + ENV + " mode")
-);
+server.listen(PORT, () => console.log("Server started on port " + PORT));
