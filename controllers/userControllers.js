@@ -110,10 +110,51 @@ const getInfoUser = asyncHandler(async (req, res, next) => {
   }
 });
 
+const transferUser = asyncHandler(async (req, res, next) => {
+  const { senderID, amount, wallet, alias } = req.body;
+  try {
+    const userInfo = await User.findById(senderID);
+    if (!userInfo) throw Boom.badRequest("Error: User not found");
+
+    if (userInfo.balance < amount) {
+      throw Boom.badRequest("Error: Insufficient balance");
+    }
+
+    const infoUserWallet = await User.findOne({ wallet });
+    const infoUserAlias = await User.findOne({ alias });
+
+    if (!infoUserWallet && !infoUserAlias) {
+      throw Boom.badRequest("Error: User not found");
+    }
+    console.log(infoUserWallet, infoUserAlias);
+    if (infoUserWallet) {
+      console.log("Monto a transferir: ", amount);
+      infoUserWallet.balance += Number(amount);
+      await infoUserWallet.save();
+    } else if (infoUserAlias) {
+      infoUserAlias.balance += amount;
+      await infoUserAlias.save();
+    }
+
+    userInfo.balance -= amount;
+
+    await userInfo.save();
+
+    return res.status(200).json({
+      status: true,
+      message: "Transfer completed successfully",
+      userInfo,
+    });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getInfoUser,
   updatePrivateKey,
   updateAddressAndSmartContract,
+  transferUser,
 };

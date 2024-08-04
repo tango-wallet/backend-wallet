@@ -4,6 +4,7 @@ const {
   getInfoUser,
   updatePrivateKey,
   updateAddressAndSmartContract,
+  transferUser,
 } = require("./userControllers");
 
 module.exports = {
@@ -12,4 +13,5 @@ module.exports = {
   getInfoUser,
   updatePrivateKey,
   updateAddressAndSmartContract,
+  transferUser,
 };

@@ -7,6 +7,7 @@ const {
   getInfoUser,
   updatePrivateKey,
   updateAddressAndSmartContract,
+  transferUser,
 } = require("../controllers");
 
 router.route("/login").post(loginUser);
@@ -15,5 +16,6 @@ router.route("/info/user/:id").get(getInfoUser);
 
 router.route("/update/privatekey").post(updatePrivateKey);
 router.route("/update/address").post(updateAddressAndSmartContract);
+router.route("/transfer").post(transferUser);
 
 module.exports = router;
