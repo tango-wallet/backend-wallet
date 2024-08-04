@@ -20,6 +20,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     if (!existEmail) {
       userInfo = await User.create({
         email: infoUser.email.toLowerCase(),
+        balance: 10,
       });
       if (!userInfo) throw Boom.badRequest("Error: User could not be created");
     } else {
@@ -44,7 +45,7 @@ const updateAddressAndSmartContract = asyncHandler(async (req, res, next) => {
     const userInfo = await User.findOne({ email });
     if (!userInfo) throw Boom.badRequest("Error: User not found");
 
-    userInfo.address = address;
+    userInfo.wallet = address;
     userInfo.smart_contract = crypto.randomBytes(20).toString("hex");
 
     await userInfo.save();
@@ -85,8 +86,15 @@ const loginUser = asyncHandler(async (req, res, next) => {
 });
 
 const getInfoUser = asyncHandler(async (req, res, next) => {
-  const { _id } = req.user;
+  const { id } = req.params;
   try {
+    const userInfo = await User.findById(id);
+    if (!userInfo) throw Boom.badRequest("Error: User not found");
+    console.log(userInfo);
+    return res.status(200).json({
+      status: true,
+      userInfo,
+    });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }

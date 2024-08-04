@@ -11,7 +11,7 @@ const {
 
 router.route("/login").post(loginUser);
 router.route("/register").post(registerUser);
-router.route("/info/user").get(getInfoUser);
+router.route("/info/user/:id").get(getInfoUser);
 
 router.route("/update/privatekey").post(updatePrivateKey);
 router.route("/update/address").post(updateAddressAndSmartContract);

@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "rsync -av --exclude 'node_modules' ./ root@64.23.206.1:/var/www/backend",
+    "deploy": "scp -r config controllers middleware models routes utils package.json server.js root@64.23.206.1:/var/www/backend",
     "start": "nodemon server.js"
   },
   "author": "",
@@ -18,7 +18,9 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
+    "google-auth-library": "^9.13.0",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.2",
     "pg": "^8.12.0"
   }
 }
