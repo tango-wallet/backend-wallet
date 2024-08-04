@@ -4,6 +4,8 @@ const crypto = require("crypto");
 const Boom = require("@hapi/boom");
 const generateToken = require("../utils/generateToken");
 const verifyGoogleToken = require("../utils/verifyGoogleToken");
+const { ethers } = require('ethers');
+require('dotenv').config();
 
 const registerUser = asyncHandler(async (req, res, next) => {
   const { code } = req.body;
@@ -56,7 +58,20 @@ const updateAddressAndSmartContract = asyncHandler(async (req, res, next) => {
     if (!userInfo) throw Boom.badRequest("Error: User not found");
 
     userInfo.wallet = address;
-    userInfo.smart_contract = crypto.randomBytes(20).toString("hex");
+
+    // Get signer
+    const signer = provider.getSigner(address);
+    // Wallet_Builder Contract instantiation
+    const contractAddress = process.env.CONTRACT_ADDRESS;
+    const abi = JSON.parse(process.env.CONTRACT_ABI);
+    const wallet_Builder = new ethers.Contract(contractAddress, abi, signer);
+    const tx = await wallet_Builder.createWallet(address);
+    await tx.wait();
+
+    const wallet_index = await wallet_Builder.wallet_index();
+
+    userInfo.smart_contract = await wallet_Builder.wallets(wallet_index);
+    //crypto.randomBytes(20).toString("hex");
 
     await userInfo.save();
 
