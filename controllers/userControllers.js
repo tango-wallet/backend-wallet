@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const { User } = require("../models");
 const crypto = require("crypto");
 const Boom = require("@hapi/boom");
 const generateToken = require("../utils/generateToken");
