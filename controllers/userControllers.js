@@ -17,10 +17,20 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
     const existEmail = await User.findOne({ email: parsedEmail });
 
+    const generateAlias = () => {
+      const alphabet = "abcdefghijklmnopqrstuvwxyz";
+      let alias = "";
+      for (let i = 0; i < 5; i++) {
+        alias += alphabet[Math.floor(Math.random() * alphabet.length)];
+      }
+      return alias;
+    };
+
     if (!existEmail) {
       userInfo = await User.create({
         email: infoUser.email.toLowerCase(),
         balance: 10,
+        alias: generateAlias(),
       });
       if (!userInfo) throw Boom.badRequest("Error: User could not be created");
     } else {

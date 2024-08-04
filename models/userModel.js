@@ -26,6 +26,10 @@ const userSchema = mongoose.Schema(
       type: Number,
       required: false,
     },
+    alias: {
+      type: String,
+      required: false,
+    },
   },
 
   {
