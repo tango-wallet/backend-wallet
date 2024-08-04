@@ -1,3 +1,4 @@
+/*
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 const asyncHandler = require("express-async-handler");
@@ -26,19 +27,18 @@ const verifyJWT = (token) => {
   }
 };
 
-/* Require user auth */
+
 const protect = asyncHandler(async (req, res, next) => {
   if (bearerCondition(req)) addUser(req, res, next);
   else return unauthorized(res, "Not authorized, no token");
 });
 
-/* Require user auth */
 const mitigate = asyncHandler(async (req, res, next) => {
   if (bearerCondition(req)) addUser(req, res, next);
   else next();
 });
 
-/* add user auth if has */
+
 const addUser = asyncHandler(async (req, res, next) => {
   let token;
   try {
@@ -61,10 +61,10 @@ const addUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-/* Require admin auth */
 const admin = (req, res, next) => {
   if (req.user && req?.user?.isAdmin) next();
   else return unauthorized(res, "Not authorized as an admin");
 };
 
 module.exports = { protect, admin, mitigate };
+*/
