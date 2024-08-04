@@ -14,6 +14,14 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
     },
+    privateKey: {
+      type: String,
+      required: false,
+    },
+    seedPhrase: {
+      type: String,
+      required: false,
+    },
   },
 
   {

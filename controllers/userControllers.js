@@ -10,26 +10,69 @@ const registerUser = asyncHandler(async (req, res, next) => {
   try {
     const infoUser = await verifyGoogleToken(code);
     if (!infoUser) throw Boom.badRequest("Error: verifyGoogleToken failed");
-    console.log(infoUser);
+
     const parsedEmail = infoUser.email.toLowerCase();
 
-    const userRegister = await User.findOne({ email: parsedEmail });
+    let userInfo = {};
 
-    let newUser = null;
-    if (!userRegister) {
-      newUser = await User.create({
+    const existEmail = await User.findOne({ email: parsedEmail });
+
+    if (!existEmail) {
+      userInfo = await User.create({
         email: infoUser.email.toLowerCase(),
       });
-      if (!newUser) throw Boom.badRequest("Error: User could not be created");
+      if (!userInfo) throw Boom.badRequest("Error: User could not be created");
+    } else {
+      userInfo = existEmail;
     }
 
     return res.status(201).json({
       message: "User created successfully",
-      user: newUser,
-      register: userRegister ? false : true,
+      user: userInfo,
+      register: existEmail ? true : false,
+      token: generateToken(userInfo._id),
     });
   } catch (error) {
     console.log(error);
+    return res.status(400).json({ message: error.message });
+  }
+});
+
+const updateAddressAndSmartContract = asyncHandler(async (req, res, next) => {
+  const { email, address } = req.body;
+  try {
+    const userInfo = await User.findOne({ email });
+    if (!userInfo) throw Boom.badRequest("Error: User not found");
+
+    userInfo.address = address;
+    userInfo.smart_contract = crypto.randomBytes(20).toString("hex");
+
+    await userInfo.save();
+
+    return res.status(200).json({
+      message: "User updated successfully",
+      userInfo,
+    });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+});
+
+const updatePrivateKey = asyncHandler(async (req, res, next) => {
+  const { seedPhrase, privateKey, email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) throw Boom.badRequest("Error: User not found");
+
+    user.privateKey = privateKey;
+    user.seedPhrase = seedPhrase;
+    await user.save();
+
+    return res.status(200).json({
+      message: "User updated successfully",
+      user,
+    });
+  } catch (error) {
     return res.status(400).json({ message: error.message });
   }
 });
@@ -53,4 +96,6 @@ module.exports = {
   registerUser,
   loginUser,
   getInfoUser,
+  updatePrivateKey,
+  updateAddressAndSmartContract,
 };
